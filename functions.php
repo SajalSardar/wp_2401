@@ -113,3 +113,105 @@ function wpdocs_register_widgets() {
         'id'   => 'sidbar_1',
     ]);
 }
+
+// Set UI labels for Custom Post Type
+add_action('init', 'custom_post_type');
+function custom_post_type() {
+
+    $labels = array(
+        'name'               => _x('Movies', 'Post Type General Name', 'oneblog'),
+        'singular_name'      => _x('Movie', 'Post Type Singular Name', 'oneblog'),
+        'menu_name'          => __('Movies', 'oneblog'),
+        'parent_item_colon'  => __('Parent Movie', 'oneblog'),
+        'all_items'          => __('All Movies', 'oneblog'),
+        'view_item'          => __('View Movie', 'oneblog'),
+        'add_new_item'       => __('Add New Movie', 'oneblog'),
+        'add_new'            => __('Add New', 'oneblog'),
+        'edit_item'          => __('Edit Movie', 'oneblog'),
+        'update_item'        => __('Update Movie', 'oneblog'),
+        'search_items'       => __('Search Movie', 'oneblog'),
+        'not_found'          => __('Not Found', 'oneblog'),
+        'not_found_in_trash' => __('Not found in Trash', 'oneblog'),
+    );
+
+    $args = array(
+        'label'               => __('movies', 'oneblog'),
+        'description'         => __('Movie news and reviews', 'oneblog'),
+        'labels'              => $labels,
+        'supports'            => array('title', 'editor', 'excerpt', 'author', 'thumbnail', 'comments', 'revisions', 'custom-fields'),
+        'taxonomies'          => array('subjects'),
+        'hierarchical'        => false,
+        'public'              => true,
+        'show_ui'             => true,
+        'show_in_menu'        => true,
+        'show_in_nav_menus'   => true,
+        'show_in_admin_bar'   => true,
+        'menu_position'       => 5,
+        'can_export'          => true,
+        'has_archive'         => true,
+        'exclude_from_search' => false,
+        'publicly_queryable'  => true,
+        'capability_type'     => 'post',
+        'show_in_rest'        => true,
+        'rewrite'             => array('slug' => 'movies'),
+
+    );
+
+    // Registering your Custom Post Type
+    register_post_type('movies', $args);
+
+}
+
+//create a custom taxonomy name it subjects for your posts
+add_action('init', 'create_movies_taxonomy');
+
+function create_movies_taxonomy() {
+
+    $labels = array(
+        'name'              => _x('Subjects', 'taxonomy general name'),
+        'singular_name'     => _x('Subject', 'taxonomy singular name'),
+        'search_items'      => __('Search Subjects'),
+        'all_items'         => __('All Subjects'),
+        'parent_item'       => __('Parent Subject'),
+        'parent_item_colon' => __('Parent Subject:'),
+        'edit_item'         => __('Edit Subject'),
+        'update_item'       => __('Update Subject'),
+        'add_new_item'      => __('Add New Subject'),
+        'new_item_name'     => __('New Subject Name'),
+        'menu_name'         => __('Subjects'),
+    );
+
+    register_taxonomy('subjects', array('movies'), array(
+        'hierarchical'      => true,
+        'labels'            => $labels,
+        'show_ui'           => true,
+        'show_in_rest'      => true,
+        'show_admin_column' => true,
+        'query_var'         => true,
+        'rewrite'           => array('slug' => 'subject'),
+    ));
+
+}
+
+// function that runs when shortcode is called
+add_shortcode('greeting', 'wpb_demo_shortcode');
+function wpb_demo_shortcode() {
+
+    return "<h1>ok</h1>";
+}
+
+add_shortcode('new_button', 'wpb_button_shortcode');
+function wpb_button_shortcode($atts, $content) {
+    $valus = shortcode_atts([
+        'url' => '#',
+    ], $atts);
+    return '<a href="' . esc_attr($valus['url']) . '">' . $content . '</a>';
+}
+
+add_shortcode('movies', 'wpb_movies_shortcode');
+function wpb_movies_shortcode($atts, $content) {
+    $valus = shortcode_atts([
+        'url' => '#',
+    ], $atts);
+    return '<a href="' . esc_attr($valus['url']) . '">' . $content . '</a>';
+}
